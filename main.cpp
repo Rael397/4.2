@@ -6,7 +6,7 @@ vector<int> dijkstra::dist;
 
 int main() {
 
-	gargalo::acha_gargalo();
+	gargalo::calcula_gargalo();
 
 	return 0;
 }

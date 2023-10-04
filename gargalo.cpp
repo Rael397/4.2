@@ -1,6 +1,6 @@
 #include "gargalo.h"
 
-    int gargalo::acha_gargalo() {
+    int gargalo::calcula_gargalo() {
         map<string, int> cidade_para_indice = {
             {"Paulinia", 0},
             {"Piracicaba", 1},
@@ -36,22 +36,29 @@
 
         dijkstra::aplica_dijkstra(inicio, parent);
 
-        int gargalo = *min_element(dijkstra::dist.begin(), dijkstra::dist.end());
-
-        cout << "O gargalo da distribuicao eh: " << gargalo << endl;
-
-
         map<int, string> indice_para_cidade;
         for (const auto& pair : cidade_para_indice) {
             indice_para_cidade[pair.second] = pair.first;
         }
 
-
         int noh = cidade_para_indice["Sao Paulo"];
         vector<string> caminho;
+        int valor_gargalo = INT_MAX;  
+        int capacidade_cumulativa = 0;  
         for (; noh != -1; noh = parent[noh]) {
             caminho.push_back(indice_para_cidade[noh]);
+            if (parent[noh] != -1) {  
+                for (auto& vizinho : dijkstra::adj[parent[noh]]) {
+                    if (vizinho.first == noh) {
+                        capacidade_cumulativa += vizinho.second;  
+                        valor_gargalo = std::min(valor_gargalo, capacidade_cumulativa);  
+                        break;
+                    }
+                }
+            }
         }
+
+        cout << "O gargalo da distribuicao eh: " << valor_gargalo << endl;
 
         reverse(caminho.begin(), caminho.end());
 
@@ -59,7 +66,6 @@
         for (const string& city : caminho) {
             cout << city << " ";
         }
-
         return 0;
     }
 
